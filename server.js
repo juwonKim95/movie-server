@@ -26,18 +26,24 @@ const conn = mysql.createConnection({
 //선연결
 conn.connect();
 
-
 //회원가입 요청
-/* app.post("/JoinPage", async (req, res)=> {
+app.post("/join", async (req, res)=> {
     //let myPass = "";
-    const {id, nicname, password, year, month, day, email, gender} = req.body;
-    console.log(req.body)
-    conn.query(`insert into members(id, nicname, password, year, month, day, email, gender) values('${id}','${nicname}','${password}','${year}','${month}','${day}','${email}','${gender}')`)
+    //console.log(res)
+    const {id, nicname, password, year, month, day, email1, email2, gender} = req.body;
+    //console.log(req.body)
+    conn.query(`insert into members(id, nicname, password, year, month, day, email1, email2, gender) values('${id}','${nicname}','${password}','${year}','${month}','${day}','${email1}','${email2}','${gender}')`
     ,(err,result,fields)=>{
         console.log(result)
-        res.send(result)
-    }
-}) */
+        if(result) {
+            console.log("성공")
+            res.send("등록되었습니다")
+        }else{
+            console.log("실패")
+            console.log(err)
+        }
+    })
+})
 
 app.listen(port, ()=>{
     console.log("서버가 동작하고 있습니다.")

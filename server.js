@@ -32,7 +32,7 @@ app.post("/join", async (req, res)=> {
     //console.log(res)
     const {id, nicname, password, year, month, day, email1, email2, gender} = req.body;
     //console.log(req.body)
-    conn.query(`insert into members(id, nicname, password, year, month, day, email1, email2, gender) values('${id}','${nicname}','${password}','${year}','${month}','${day}','${email1}','${email2}','${gender}')`
+    conn.query(`insert into members(id, nicname, password, date, email1, gender) values('${id}','${nicname}','${password}','${year}${month}${day}','${email1}@${email2}','${gender}')`
     ,(err,result,fields)=>{
         console.log(result)
         if(result) {
@@ -41,6 +41,21 @@ app.post("/join", async (req, res)=> {
         }else{
             console.log("실패")
             console.log(err)
+        }
+    })
+})
+
+//로그인 요청
+app.post('/login', async (req, res)=>{
+    console.log(req.body)
+    const {id, password} = req.body;
+    conn.query(`select * from members where id = '${id}'`,
+    (err, result, fields)=> {
+        if(result) {
+            console.log("로그인 성공")
+            res.send(result)
+        }else {
+            console.log("로그인 실패")
         }
     })
 })

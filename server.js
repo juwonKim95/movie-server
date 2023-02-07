@@ -4,15 +4,39 @@ const express = require('express');
 const cors = require('cors');
 //mysql 가져오기
 const mysql = require('mysql');
+// mulrer 가져오기
+const multer = require('multer');
 
 //서버생성
-const app =express();
+const app = express();
 //프로세서의 주소 포트번호 지정
 const port = 8080;
 
-app.use(cors())
+app.use(cors());
 
-app.use(express.json())
+app.use(express.json());
+
+// upload 폴더를 클라이언트에서 접근 가능하도록 설정
+app.use('/upload', express.static('upload'));
+
+// storage 생성
+const storage = multer.diskStorage({
+    destination: (req, file, cd) => {
+        cd(null, 'upload/poster/');
+    },
+    filename: (req, file, cd) => {
+        const newFilename = file.originalname;
+        cd(null, newFilename);
+    }
+});
+// upload 객체 생성
+const upload = multer({storage: storage});
+// upload 경로로 post 요청 했을 시 응답 구현 
+app.post('/upload', upload.single('file'), (req, res) => {
+    res.send({
+        imgUrl: req.file.filename
+    });
+});
 
 //mysql연결하기
 const conn = mysql.createConnection({
@@ -25,6 +49,21 @@ const conn = mysql.createConnection({
 
 //선연결
 conn.connect();
+
+// get 요청
+app.get('/latest', (req, res) => {
+    conn.query('select * from movie where mov_no < 16', 
+    (err, result, fields) => {
+        res.send(result);
+    });
+})
+app.get('/latest/:no', (req, res) => {
+    const {no} = req.params;
+    conn.query(`select * from movie where mov_no=${no}`, 
+    (err, result, fields) => {
+        res.send(result);
+    });
+})
 
 //회원가입 요청
 app.post("/join", async (req, res)=> {

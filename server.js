@@ -6,6 +6,11 @@ const cors = require('cors');
 const mysql = require('mysql');
 // mulrer 가져오기
 const multer = require('multer');
+//bcrypt가져오기
+const bcrypt = require('bcrypt');
+//암호화 글자수
+const saltRounds = 10;
+
 
 //서버생성
 const app = express();
@@ -67,21 +72,28 @@ app.get('/latest/:no', (req, res) => {
 
 //회원가입 요청
 app.post("/join", async (req, res)=> {
-    //let myPass = "";
+    const mytextpass = req.body.password;
+    let myPass = "";
     //console.log(res)
-    const {id, nicname, password, year, month, day, email1, email2, gender} = req.body;
-    //console.log(req.body)
-    conn.query(`insert into members(id, nicname, password, date, email1, gender) values('${id}','${nicname}','${password}','${year}${month}${day}','${email1}@${email2}','${gender}')`
-    ,(err,result,fields)=>{
-        console.log(result)
-        if(result) {
-            console.log("성공")
-            res.send("등록되었습니다")
-        }else{
-            console.log("실패")
-            console.log(err)
-        }
-    })
+    const {id, username , nicname, password, year, month, day, email1, email2, gender} = req.body;
+    console.log(req.body)
+    if(mytextpass != '' && mytextpass != undefined) {
+        bcrypt.genSalt(saltRounds, function(err, salt){
+            bcrypt.hash(mytextpass, salt, function(err, hash){
+                myPass = hash;
+                conn.query(`insert into members(id,username, nicname, password, date, email1, gender) values('${id}','${username}','${nicname}','${myPass}','${year}${month}${day}','${email1}@${email2}','${gender}')`
+                ,(err,result,fields)=>{
+                    console.log(result)
+                    if(result) {
+                        console.log("성공")
+                        res.send("등록되었습니다")
+                    }
+                    console.log(err)
+                })
+            })
+        })
+    }
+    
 })
 
 //로그인 요청
@@ -90,12 +102,20 @@ app.post('/login', async (req, res)=>{
     const {id, password} = req.body;
     conn.query(`select * from members where id = '${id}'`,
     (err, result, fields)=> {
-        if(result) {
-            console.log("로그인 성공")
-            res.send(result)
+        console.log(result)
+        if(result != undefined && result[0] != undefined) {
+            bcrypt.compare(password, result[0].password, function(err,newPassword){
+                if(newPassword) {
+                    console.log("로그인 성공")
+                    res.send(result)
+                }else {
+                    console.log("로그인 실패")
+                }
+            })
         }else {
-            console.log("로그인 실패")
+            console.log('데이터가 없습니다.')
         }
+        
     })
 })
 

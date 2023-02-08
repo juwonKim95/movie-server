@@ -156,7 +156,37 @@ app.post("/findid", async (req, res)=>{
 
 //비밀번호 찾기
 app.post("/findpass", async (req, res)=>{
+    const {username, userid, useremail} = req.body
+    conn.query(`select * from members where username = '${username}' and email1 = '${useremail}' and id = '${userid}'`,
+    (err, result, fields)=>{
+        if(result) {
+            console.log(result)
+            res.send(result[0].email1);
+        }
+        console.log(err)
+    })
+})
 
+//비밀번호 변경 요청
+app.patch('/editpass', async (req, res) => {
+    const {password, email} = req.body
+    const mytextpass = password
+    let myPass = ''
+    if(mytextpass !='' && mytextpass != undefined) {
+        bcrypt.genSalt(saltRounds, function(err, salt){
+            bcrypt.hash(mytextpass, salt, function(err, hash){
+                myPass = hash;
+                conn.query(`update members set password = '${myPass}' where email1 = '${email}'`,
+                (err, result,fields)=>{
+                    if(result){
+                        res.send("등록되었습니다")
+                        console.log(result)
+                    }
+                    console.log(err)
+                })
+            })
+        })
+    }
 })
 
 

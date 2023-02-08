@@ -57,15 +57,33 @@ conn.connect();
 
 // get 요청
 app.get('/latest', (req, res) => {
-    conn.query('select * from movie where mov_no < 16', 
+    conn.query('select * from movie where mov_no limit 0, 15', 
     (err, result, fields) => {
         res.send(result);
     });
 })
+
 app.get('/latest/:no', (req, res) => {
     const {no} = req.params;
     conn.query(`select * from movie where mov_no=${no}`, 
     (err, result, fields) => {
+        res.send(result);
+    });
+})
+
+//추천 영화 페이지 데이터 전송
+app.get('/recomend', (req, res) => {
+    conn.query('select * from movie where mov_no limit 15, 15', 
+    (err, result, fields) => {
+        console.log(result);
+        res.send(result);
+    });
+})
+app.get('/recomend/:no', (req, res) => {
+    const {no} = req.params;
+    conn.query(`select * from movie where mov_no=${no}`, 
+    (err, result, fields) => {
+        console.log(result);
         res.send(result);
     });
 })

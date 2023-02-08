@@ -98,17 +98,21 @@ app.post("/join", async (req, res)=> {
 
 //로그인 요청
 app.post('/login', async (req, res)=>{
-    console.log(req.body)
-    const {id, password} = req.body;
-    conn.query(`select * from members where id = '${id}'`,
+    //console.log(req.body)
+    const {userid, userpassword} = req.body;
+    conn.query(`select * from members where id = '${userid}'`,
     (err, result, fields)=> {
         console.log(result)
         if(result != undefined && result[0] != undefined) {
-            bcrypt.compare(password, result[0].password, function(err,newPassword){
+            bcrypt.compare(userpassword, result[0].password, function(err,newPassword){
+                console.log(newPassword)
+                console.log(userpassword)
                 if(newPassword) {
                     console.log("로그인 성공")
+                    //console.log(result)
                     res.send(result)
                 }else {
+                    //console.log(result)
                     console.log("로그인 실패")
                 }
             })
@@ -118,6 +122,25 @@ app.post('/login', async (req, res)=>{
         
     })
 })
+
+//아이디찾기
+app.post("/findid", async (req, res)=>{
+    const {username, useremail} = req.body;
+    conn.query(`select * from members where username= '${username}' and email1 = '${useremail}'`,
+    (err, result, fields)=>{
+        if(result){
+            console.log("아이디찾기성공")
+            res.send(result[0].email1);
+        }
+        console.log(err)
+    })
+})
+
+//비밀번호 찾기
+app.post("/findpass", async (req, res)=>{
+
+})
+
 
 app.listen(port, ()=>{
     console.log("서버가 동작하고 있습니다.")

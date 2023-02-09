@@ -62,7 +62,7 @@ app.get('/latest', (req, res) => {
         res.send(result);
     });
 })
-
+// 상세보기 페이지 데이터 전송
 app.get('/detail/:no', (req, res) => {
     const {no} = req.params;
     conn.query(`select * from movie where mov_no=${no}`, 

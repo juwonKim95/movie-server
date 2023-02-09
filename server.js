@@ -89,6 +89,35 @@ app.get('/genrepage', (req, res) => {
     });
 })
 
+//id 중복확인
+app.post("/idch", async (req, res)=>{
+    const {id} = req.body;
+    console.log(id)
+    conn.query(`select * from members where id ='${id}'`,
+    (err, result, fields)=>{
+        if(result){
+            console.log(result)
+            res.send(result[0])
+        }
+        console.log(err)
+    })
+})
+
+//닉네임 중복확인
+app.post("/nicname", async (req, res)=>{
+    const {nicname} = req.body;
+    console.log(nicname)
+    conn.query(`select * from members where nicname ='${nicname}'`,
+    (err, result, fields)=>{
+        if(result){
+            console.log(result)
+            res.send(result[0])
+        }
+        console.log(err)
+    })
+})
+
+
 //회원가입 요청
 app.post("/join", async (req, res)=> {
     const mytextpass = req.body.password;

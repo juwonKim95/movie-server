@@ -63,7 +63,7 @@ app.get('/latest', (req, res) => {
     });
 })
 
-app.get('/latest/:no', (req, res) => {
+app.get('/detail/:no', (req, res) => {
     const {no} = req.params;
     conn.query(`select * from movie where mov_no=${no}`, 
     (err, result, fields) => {
@@ -79,9 +79,10 @@ app.get('/recomend', (req, res) => {
         res.send(result);
     });
 })
-app.get('/recomend/:no', (req, res) => {
-    const {no} = req.params;
-    conn.query(`select * from movie where mov_no=${no}`, 
+
+//장르 영화 페이지 데이터 전송
+app.get('/genrepage', (req, res) => {
+    conn.query('select * from movie where mov_no', 
     (err, result, fields) => {
         console.log(result);
         res.send(result);
@@ -148,7 +149,7 @@ app.post("/findid", async (req, res)=>{
     (err, result, fields)=>{
         if(result){
             console.log("아이디찾기성공")
-            res.send(result[0].email1);
+            res.send(result[0].id);
         }
         console.log(err)
     })

@@ -118,6 +118,23 @@ app.post("/nicname", async (req, res)=>{
 })
 
 
+
+//월별 추천 영화 페이지 데이터 전송
+app.get('/month', (req, res) => {
+    conn.query('select * from movie where mov_no limit 40, 10', 
+    (err, result, fields) => {
+        console.log(result);
+        res.send(result);
+    });
+})
+app.get('/month/:no', (req, res) => {
+    const {no} = req.params;
+    conn.query(`select * from movie where mov_no=${no}`, 
+    (err, result, fields) => {
+        console.log(result);
+        res.send(result);
+    });
+})
 //회원가입 요청
 app.post("/join", async (req, res)=> {
     const mytextpass = req.body.password;

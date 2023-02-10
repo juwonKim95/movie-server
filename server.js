@@ -56,13 +56,14 @@ const conn = mysql.createConnection({
 conn.connect();
 
 // get 요청
+// 최신영화 - 현재상영 페이지 데이터 전송
 app.get('/latest', (req, res) => {
     conn.query('select * from movie where mov_no limit 0, 15', 
     (err, result, fields) => {
         res.send(result);
     });
 })
-// 상세보기 페이지 데이터 전송
+// 영화 상세보기 페이지 데이터 전송
 app.get('/detail/:no', (req, res) => {
     const {no} = req.params;
     conn.query(`select * from movie where mov_no=${no}`, 
@@ -71,11 +72,18 @@ app.get('/detail/:no', (req, res) => {
     });
 })
 
-//추천 영화 페이지 데이터 전송
+// 추천 영화 - 전체보기 페이지 데이터 전송
 app.get('/recomend', (req, res) => {
     conn.query('select * from movie where mov_no limit 15, 15', 
     (err, result, fields) => {
-        console.log(result);
+        res.send(result);
+    });
+})
+
+// 이달의 추천 영화 페이지 데이터 전송
+app.get('/monthreco', (req, res) => {
+    conn.query('select * from movie where mov_no limit 40, 10',
+    (err, result, fields) => {
         res.send(result);
     });
 })

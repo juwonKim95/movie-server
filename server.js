@@ -72,6 +72,14 @@ app.get('/detail/:no', (req, res) => {
     });
 })
 
+// 최신영화 - 개봉예정 페이지 데이터 전송
+app.get('/yetpos', (req, res) => {
+    conn.query('select * from movie where mov_no limit 30, 15', 
+    (err, result, fields) => {
+        res.send(result);
+    });
+})
+
 // 추천 영화 - 전체보기 페이지 데이터 전송
 app.get('/recomend', (req, res) => {
     conn.query('select * from movie where mov_no limit 15, 15', 
@@ -125,24 +133,6 @@ app.post("/nicname", async (req, res)=>{
     })
 })
 
-
-
-//월별 추천 영화 페이지 데이터 전송
-app.get('/month', (req, res) => {
-    conn.query('select * from movie where mov_no limit 40, 10', 
-    (err, result, fields) => {
-        console.log(result);
-        res.send(result);
-    });
-})
-app.get('/month/:no', (req, res) => {
-    const {no} = req.params;
-    conn.query(`select * from movie where mov_no=${no}`, 
-    (err, result, fields) => {
-        console.log(result);
-        res.send(result);
-    });
-})
 //회원가입 요청
 app.post("/join", async (req, res)=> {
     const mytextpass = req.body.password;

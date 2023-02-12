@@ -60,7 +60,10 @@ conn.connect();
 app.get('/latest', (req, res) => {
     conn.query('select * from movie where mov_no limit 0, 15', 
     (err, result, fields) => {
-        res.send(result);
+        if(result) {
+            res.send(result);
+        }
+        console.log(err)
     });
 })
 // 영화 상세보기 페이지 데이터 전송
@@ -68,7 +71,10 @@ app.get('/detail/:no', (req, res) => {
     const {no} = req.params;
     conn.query(`select * from movie where mov_no=${no}`, 
     (err, result, fields) => {
-        res.send(result);
+        if(result) {
+            res.send(result);
+        }
+        console.log(err)
     });
 })
 
@@ -76,7 +82,10 @@ app.get('/detail/:no', (req, res) => {
 app.get('/yetpos', (req, res) => {
     conn.query('select * from movie where mov_no limit 30, 15', 
     (err, result, fields) => {
-        res.send(result);
+        if(result) {
+            res.send(result);
+        }
+        console.log(err)
     });
 })
 
@@ -84,7 +93,10 @@ app.get('/yetpos', (req, res) => {
 app.get('/recomend', (req, res) => {
     conn.query('select * from movie where mov_no limit 15, 15', 
     (err, result, fields) => {
-        res.send(result);
+        if(result) {
+            res.send(result);
+        }
+        console.log(err)
     });
 })
 
@@ -92,18 +104,67 @@ app.get('/recomend', (req, res) => {
 app.get('/monthreco', (req, res) => {
     conn.query('select * from movie where mov_no limit 40, 10',
     (err, result, fields) => {
-        res.send(result);
+        if(result) {
+            res.send(result);
+        }
+        console.log(err)
     });
 })
 
 //장르 영화 페이지 데이터 전송
-app.get('/genrepage', (req, res) => {
-    conn.query('select * from movie where mov_no', 
+app.get('/genrePage', (req, res) => {
+    conn.query('select * from movie', 
     (err, result, fields) => {
-        console.log(result);
-        res.send(result);
+        //console.log(result);
+        if(result) {
+            res.send(result);
+        }
+        console.log(err)
     });
 })
+
+//장르선택 페이지 데이터 전송
+app.get("/genrech/:genrechange", (req, res) => {
+    const {genrechange} = req.params;
+    console.log(genrechange)
+    if(genrechange == "전체"){
+        conn.query('select * from movie', 
+    (err, result, fields) => {
+        //console.log(result);
+        if(result) {
+            res.send(result);
+        }
+        console.log(err)
+    });
+    }else{
+    conn.query(`select * from movie where mov_genre like '%${genrechange}%'`, 
+    (err, result, fields) => {
+        //console.log(result);
+        if(result) {
+            console.log(result)
+            res.send(result);
+        }
+        console.log(err)
+    });
+    }
+})
+
+
+//검색하기
+app.get("/search/:name/:value", async (req, res) => {
+    const {name, value} = req.params;
+    console.log(value)
+    conn.query(`select * from movie where ${name} like'%${value}%'`,
+    (err, result, fields)=>{
+        if(result){
+            console.log(result)
+            res.send(result)
+        }
+        console.log(err)
+    })
+})
+
+
 
 //id 중복확인
 app.post("/idch", async (req, res)=>{
@@ -118,6 +179,7 @@ app.post("/idch", async (req, res)=>{
         console.log(err)
     })
 })
+
 
 //닉네임 중복확인
 app.post("/nicname", async (req, res)=>{

@@ -296,6 +296,24 @@ app.patch('/editpass', async (req, res) => {
     }
 })
 
+// 영화등록 요청
+app.post(`/recomend`, async (req, res) => {
+    const {mov_title, mov_genre, mov_limit, mov_date, mov_runnigtime,
+    mov_actor, mov_director, mov_country, mov_score, mov_desc,
+    mov_img, mov_movelink, mov_reco} = req.body;
+    // 쿼리문
+    conn.query(`insert into movie(mov_title, mov_genre, mov_limit, mov_date, mov_runnigtime,
+        mov_actor, mov_director, mov_country, mov_score, mov_desc,
+        mov_img, mov_movelink, mov_reco) values(?,?,?,?,?,?,?,?,?,?,?,?,?)`, [mov_title, mov_genre, mov_limit, 
+        mov_date, mov_runnigtime, mov_actor, mov_director, mov_country, mov_score, mov_desc,
+        mov_img, mov_movelink, mov_reco], (err, result, fields) => {
+            if(result) {
+                res.send('OK');
+            }else {
+                console.log(err);
+            }
+        });
+})
 
 app.listen(port, ()=>{
     console.log("서버가 동작하고 있습니다.")

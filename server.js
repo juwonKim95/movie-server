@@ -165,6 +165,30 @@ app.get("/search/:name/:value", async (req, res) => {
 })
 
 
+//게시글 등록
+app.post("/free", async (req, res) => {
+    const {t_title, t_desc,t_nickname, t_date} = req.body;
+    console.log(req)
+    conn.query(`insert into board(bor_title, bor_name, bor_desc, bor_date) values('${t_title}','${t_nickname}','${t_desc}','${t_date}')`
+    ,(err, result, fields)=>{
+        if(result){
+            console.log("성공")
+            //console.log(result);
+            //console.log(req.body)
+            res.send(req.body);
+        }
+        console.log(err);
+    })
+})
+
+/* conn.query(`insert into members(id,username, nicname, password, date, email1, gender) values('${id}','${username}','${nicname}','${myPass}','${year}${month}${day}','${email1}@${email2}','${gender}')`
+                ,(err,result,fields)=>{
+                    console.log(result)
+                    if(result) {
+                        console.log("성공")
+                        res.send("등록되었습니다") */
+
+
 
 //id 중복확인
 app.post("/idch", async (req, res)=>{
@@ -191,7 +215,7 @@ app.post("/nicname", async (req, res)=>{
             console.log(result)
             res.send(result[0])
         }
-        console.log(err)
+        console.log(err);
     })
 })
 

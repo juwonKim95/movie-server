@@ -189,6 +189,15 @@ app.post("/free", async (req, res) => {
                         res.send("등록되었습니다") */
 
 
+//리뷰데이터 요청
+app.get("/review", async (req, res) => {
+    conn.query(`select * from review`, (err, result, fields) => {
+        if(result){
+            console.log(result);
+            res.send(result);
+        }
+    })
+})
 
 //id 중복확인
 app.post("/idch", async (req, res)=>{

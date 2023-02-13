@@ -181,12 +181,18 @@ app.post("/free", async (req, res) => {
     })
 })
 
-/* conn.query(`insert into members(id,username, nicname, password, date, email1, gender) values('${id}','${username}','${nicname}','${myPass}','${year}${month}${day}','${email1}@${email2}','${gender}')`
-                ,(err,result,fields)=>{
-                    console.log(result)
-                    if(result) {
-                        console.log("성공")
-                        res.send("등록되었습니다") */
+// 게시글 상세보기 페이지 데이터 전송
+app.get('/textFree/:no', (req, res) => {
+    const {no} = req.params;
+    conn.query(`select * from board where bor_no=${no}`, 
+    (err, result, fields) => {
+        if(result) {
+            console.log(result)
+            res.send(result);
+        }
+        console.log(err)
+    });
+})
 
 
 //리뷰데이터 요청
@@ -198,6 +204,47 @@ app.get("/review", async (req, res) => {
         }
     })
 })
+
+//자유게시판 데이터 요청
+app.get("/textFree", async (req, res) => {
+    conn.query(`select * from board`,
+     (err, result, fields)=>{
+        if(result){
+            console.log(result);
+            res.send(result)
+        }
+        console.log(err)
+     })
+})
+
+//자유게시판 수정
+app.patch("/editFree", async (req, res)=> {
+    const {t_title, t_nickname, t_date, t_desc, t_no} = req.body
+    conn.query(`update board set bor_title = '${t_title}', bor_name = '${t_nickname}', bor_date = '${t_date}', bor_desc = '${t_desc}' where bor_no = '${t_no}'`,
+    (err, result, fields)=> {
+        if(result) {
+            res.send("등록되었습니다")
+            console.log(result)
+        }
+        console.log(err)
+    })
+})
+
+//자유게시판 삭제
+app.delete("/deleteFree/:no", async (req, res)=> {
+    const {no} = req.params
+    conn.query(`delete from board where bor_no = '${no}'`,
+    (err, result, fields)=> {
+        if(result) {
+            res.send("삭제되었습니다")
+            console.log(result)
+        }
+        console.log(err)
+    })
+})
+
+
+
 
 //id 중복확인
 app.post("/idch", async (req, res)=>{

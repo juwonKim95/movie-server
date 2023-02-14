@@ -205,6 +205,25 @@ app.get("/review", async (req, res) => {
     })
 })
 
+//공지게시글 등록
+app.post("/notices", async (req, res) => {
+    const {n_title, n_desc,n_nickname, n_date} = req.body;
+    console.log(req)
+    conn.query(`insert into notice(not_title, not_name, not_desc, not_date) values('${n_title}','${n_nickname}','${n_desc}','${n_date}')`
+    ,(err, result, fields)=>{
+        if(result){
+            console.log("성공")
+            //console.log(result);
+            //console.log(req.body)
+            res.send(req.body);
+        }
+        console.log(err);
+    })
+})
+
+
+
+
 //공지사항 데이터 요청
 app.get("/notice", async (req, res) => {
     conn.query(`select * from notice`,
@@ -228,8 +247,8 @@ app.get("/notice/:no", async (req, res) => {
 })
 //공지사항 수정
 app.patch("/editNotice", async (req, res)=> {
-    const {t_title, t_nickname, t_date, t_desc, t_no} = req.body
-    conn.query(`update notice set not_title = '${t_title}', not_name = '${t_nickname}', not_date = '${t_date}', not_desc = '${t_desc}' where not_no = '${t_no}'`,
+    const {n_title, n_nickname, n_date, n_desc, n_no} = req.body
+    conn.query(`update notice set not_title = '${n_title}', not_name = '${n_nickname}', not_date = '${n_date}', not_desc = '${n_desc}' where not_no = '${n_no}'`,
     (err, result, fields)=> {
         if(result) {
             res.send("등록되었습니다")
@@ -252,9 +271,43 @@ app.delete("/deleteNotice/:no", async (req, res)=> {
     })
 })
 
+//서브공지데이터 요청
+app.get("/subnotice", async (req, res) => {
+    conn.query(`select * from notice where not_no limit 0, 3`, 
+    (err, result, fields) => {
+        if(result){
+            console.log(result);
+            res.send(result);
+        }
+    })
+})
+
+//서브리뷰데이터 요청
+app.get("/subrevs", async (req, res) => {
+    conn.query(`select * from review where r_no limit 0, 3`, 
+    (err, result, fields) => {
+        if(result){
+            console.log(result);
+            res.send(result);
+        }
+    })
+})
+
 //자유게시판 데이터 요청
 app.get("/textFree", async (req, res) => {
     conn.query(`select * from board`,
+     (err, result, fields)=>{
+        if(result){
+            console.log(result);
+            res.send(result)
+        }
+        console.log(err)
+     })
+})
+
+//서브자유게시판 데이터 요청
+app.get("/subFrees", async (req, res) => {
+    conn.query(`select * from board where bor_no limit 0, 3`,    
      (err, result, fields)=>{
         if(result){
             console.log(result);
@@ -440,6 +493,33 @@ app.post(`/recomend`, async (req, res) => {
                 console.log(err);
             }
         });
+})
+
+// 한줄평 데이터 등록 요청
+app.post(`/commend`, async (req, res) => {
+    const {c_name, c_desc, c_movno} = req.body;
+    // 쿼리문 
+    conn.query(`insert into commend(c_name, c_desc, c_movno) values(?,?,?)`,[c_name, c_desc, c_movno],
+    (err, result, fields) => {
+        if(result) {
+            res.send('OK');
+
+        }else {
+            console.log(err);
+        }
+    })
+})
+// 한줄평 데이터 요청
+app.get(`/detailcommend/:no`, async (req, res) => {
+    const {no} = req.params;
+    conn.query(`select * from commend where c_movno='${no}'`, (err, result, fields) => {
+        if(result) {
+            console.log('완료');
+            res.send(result);
+        }else {
+            console.log(err);
+        }
+    })
 })
 
 app.listen(port, ()=>{

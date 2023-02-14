@@ -197,11 +197,58 @@ app.get('/textFree/:no', (req, res) => {
 
 //리뷰데이터 요청
 app.get("/review", async (req, res) => {
-    conn.query(`select * from review`, (err, result, fields) => {
+    conn.query(`select * from review where r_no limit 0,15`, (err, result, fields) => {
         if(result){
             console.log(result);
             res.send(result);
         }
+    })
+})
+
+//공지사항 데이터 요청
+app.get("/notice", async (req, res) => {
+    conn.query(`select * from notice`,
+    (err, result, fields)=>{
+        if(result){
+            res.send(result);
+        }
+        console.log(err)
+    })
+})
+//공지사항 상세게시글 데이터 요청
+app.get("/notice/:no", async (req, res) => {
+    const { no } = req.params;
+    conn.query(`select * from notice where not_no = ${no}`,
+    (err, result, fields)=>{
+        if(result){
+            res.send(result);
+        }
+        console.log(err)
+    })
+})
+//공지사항 수정
+app.patch("/editNotice", async (req, res)=> {
+    const {t_title, t_nickname, t_date, t_desc, t_no} = req.body
+    conn.query(`update notice set not_title = '${t_title}', not_name = '${t_nickname}', not_date = '${t_date}', not_desc = '${t_desc}' where not_no = '${t_no}'`,
+    (err, result, fields)=> {
+        if(result) {
+            res.send("등록되었습니다")
+            console.log(result)
+        }
+        console.log(err)
+    })
+})
+
+//공지사항 삭제
+app.delete("/deleteNotice/:no", async (req, res)=> {
+    const {no} = req.params
+    conn.query(`delete from notice where not_no = '${no}'`,
+    (err, result, fields)=> {
+        if(result) {
+            res.send("삭제되었습니다")
+            console.log(result)
+        }
+        console.log(err)
     })
 })
 

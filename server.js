@@ -533,6 +533,12 @@ app.get(`/detailcommend/:no`, async (req, res) => {
         }
     })
 })
+// 한줄평 데이터 수정하기 
+/* app.patch(`/editcommend`, async (req, res) => {
+
+}) */
+// 한줄평 데이터 삭제하기
+
 
 app.listen(port, ()=>{
     console.log("서버가 동작하고 있습니다.")

@@ -550,6 +550,50 @@ app.get(`/detailcommend/:no`, async (req, res) => {
     })
 })
 
+// 추천 카운트 데이터 요청
+app.get(`/recocount/:no`, async (req, res) => {
+    const { no } = req.params;
+    conn.query(`select * from recommend where reco_movno=${no}`,
+    (err, result, fields) => {
+        if(result) {
+            // console.log(result);
+            res.send(result);
+        }else {
+            res.send("ok");
+        }
+    })
+})
+//카운트 데이터 업데이트 요청
+app.post('/counterUpdate', async (req, res) => {
+    const {reco_usreid,reco_movno} = req.body;
+    console.log(reco_movno,reco_usreid);
+    conn.query(`select reco_usreid from recommend where reco_movno=${reco_movno}`, (err, result, fields)=>{
+        console.log(result);
+        console.log(err);
+        if(result){
+            if(result[0].reco_usreid.indexOf(reco_usreid) !== -1){
+                console.log("이미 추천했습니다.");
+            }else {
+                const userids = result[0].reco_usreid+'*'+reco_usreid;
+                console.log(userids);
+                console.log("업데이트문 작성");
+                //insert into recommend set reco_count = roco_count+1 where reco_movno=${reco_movno}
+                conn.query(`update recommend set reco_count = recommend.reco_count+1, reco_usreid='${userids}' where reco_movno=${reco_movno}` ,(err, result, fields)=>{
+                    console.log(result);
+                    console.log(err);
+                })
+            }
+           
+
+        }else {
+            conn.query(`insert into recommend(reco_movno,reco_usreid,reco_count ) values('${reco_movno}','${reco_usreid}',1)` ,(err, result, fields)=>{
+                console.log(result);
+                console.log(err);
+            })
+        }
+    })
+})
+
 app.listen(port, ()=>{
     console.log("서버가 동작하고 있습니다.")
 })

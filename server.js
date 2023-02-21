@@ -570,9 +570,10 @@ app.post('/counterUpdate', async (req, res) => {
     conn.query(`select reco_usreid from recommend where reco_movno=${reco_movno}`, (err, result, fields)=>{
         console.log(result);
         console.log(err);
-        if(result){
+        if(result.length > 0){
             if(result[0].reco_usreid.indexOf(reco_usreid) !== -1){
                 console.log("이미 추천했습니다.");
+                res.send("no");
             }else {
                 const userids = result[0].reco_usreid+'*'+reco_usreid;
                 console.log(userids);
@@ -581,14 +582,15 @@ app.post('/counterUpdate', async (req, res) => {
                 conn.query(`update recommend set reco_count = recommend.reco_count+1, reco_usreid='${userids}' where reco_movno=${reco_movno}` ,(err, result, fields)=>{
                     console.log(result);
                     console.log(err);
+                    res.send("ok");
                 })
             }
-           
-
         }else {
+            console.log("입력해야합니다.")
             conn.query(`insert into recommend(reco_movno,reco_usreid,reco_count ) values('${reco_movno}','${reco_usreid}',1)` ,(err, result, fields)=>{
                 console.log(result);
                 console.log(err);
+                res.send("ok");
             })
         }
     })

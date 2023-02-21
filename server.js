@@ -525,9 +525,9 @@ app.post(`/recomend`, async (req, res) => {
 
 // 한줄평 데이터 등록 요청
 app.post(`/commend`, async (req, res) => {
-    const {c_name, c_desc, c_movno} = req.body;
+    const {c_name, c_desc, c_movno, c_isDone} = req.body;
     // 쿼리문 
-    conn.query(`insert into commend(c_name, c_desc, c_movno) values(?,?,?)`,[c_name, c_desc, c_movno],
+    conn.query(`insert into commend(c_name, c_desc, c_movno, c_isDone) values(?,?,?,?)`,[c_name, c_desc, c_movno, c_isDone],
     (err, result, fields) => {
         if(result) {
             res.send('OK');
@@ -550,6 +550,7 @@ app.get(`/detailcommend/:no`, async (req, res) => {
     })
 })
 
+<<<<<<< Updated upstream
 // 추천 카운트 데이터 요청
 app.get(`/recocount/:no`, async (req, res) => {
     const { no } = req.params;
@@ -596,6 +597,24 @@ app.post('/counterUpdate', async (req, res) => {
     })
 })
 
+=======
+//한줄평 데이터 삭제요청
+app.delete("/deleteCommend/:id", async (req, res)=>{
+    const {id} = req.params
+    conn.query(`delete from commend where c_no = ${id}`,
+    (err, result, fields) => {
+        if(result){
+            res.send("삭제되었습니다.")
+            console.log(result)
+        }
+        console.log(err)
+    }
+    )
+})
+
+
+
+>>>>>>> Stashed changes
 app.listen(port, ()=>{
     console.log("서버가 동작하고 있습니다.")
 })

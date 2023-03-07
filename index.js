@@ -15,7 +15,8 @@ const saltRounds = 10;
 //서버생성
 const app = express();
 //프로세서의 주소 포트번호 지정
-const port = 8080;
+//헤로쿠에서 지정하는게 있다면그걸쓰고 없다면 8080을써라
+const port = process.env.PORT || 8080;
 
 app.use(cors());
 
@@ -550,7 +551,6 @@ app.get(`/detailcommend/:no`, async (req, res) => {
     })
 })
 
-<<<<<<< Updated upstream
 // 추천 카운트 데이터 요청
 app.get(`/recocount/:no`, async (req, res) => {
     const { no } = req.params;
@@ -597,7 +597,6 @@ app.post('/counterUpdate', async (req, res) => {
     })
 })
 
-=======
 //한줄평 데이터 삭제요청
 app.delete("/deleteCommend/:id", async (req, res)=>{
     const {id} = req.params
@@ -614,7 +613,6 @@ app.delete("/deleteCommend/:id", async (req, res)=>{
 
 
 
->>>>>>> Stashed changes
 app.listen(port, ()=>{
     console.log("서버가 동작하고 있습니다.")
 })
